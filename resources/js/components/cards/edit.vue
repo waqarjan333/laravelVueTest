@@ -1,0 +1,93 @@
+<template>
+    <div class="container">
+        <h2 class="text-center">Update Card</h2>
+        <div class="row">
+            <div class="col-md-12">
+                <router-link
+                    :to="{ name: 'CardIndex' }"
+                    class="btn btn-primary btn-sm float-right mb-2"
+                    >Back</router-link
+                >
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <form>
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            v-model="card.firstname"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            v-model="card.lastname"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label>Membership</label>
+                        <select class="form-control" v-model="card.membership">
+                            <option value="" selected>Select Membership</option>
+                            <option value="Gold">Gold</option>
+                            <option value="Silver">Silver</option>
+                            <option value="Plantinum">Plantinum</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea
+                            type="text"
+                            rows="5"
+                            class="form-control"
+                            v-model="card.description"
+                        ></textarea>
+                    </div>
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        @click="updateCard()"
+                    >
+                        Update
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            card: {},
+        };
+    },
+    mounted() {
+        this.editCard(this.$route.params.cardId);
+    },
+    methods: {
+        editCard(cardId) {
+            this.axios
+                .get(`http://127.0.0.1:8000/api/cards/${cardId}`)
+                .then((res) => {
+                    this.card = res.data;
+                });
+        },
+        updateCard() {
+            this.axios
+                .patch(
+                    `http://127.0.0.1:8000/api/cards/${this.$route.params.cardId}`,
+                    this.card
+                )
+                .then((res) => {
+                    this.$router.push({ name: "CardIndex" });
+                });
+        },
+    },
+};
+</script>
